@@ -1,0 +1,3 @@
+- there is no information about login/pii or security in this service, only that it should supports multi tenant. 
+- The model, even though it’s not explicitly disclosed, is quite understandable and the field types can be inferred, however, clarification would be needed.
+- even though it's not disclosed, it seems the application will run on cloud environment. The fact that it requires 2 different zones to run but no clarification on what it means exactly (cloud or cluster made of 2 different AZs) makes it difficult to prepare a solution for it.

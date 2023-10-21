@@ -1,0 +1,10 @@
+@startuml
+class Event {
+    long id
+    String title
+    String place
+    String speaker
+    String eventType
+    Timestamp dateTime
+}
+@enduml

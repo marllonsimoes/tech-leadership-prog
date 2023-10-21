@@ -1,0 +1,107 @@
+@startuml
+
+namespace com.example {
+
+    namespace application {
+        
+        namespace port {
+
+            interface IEventPort
+
+            namespace rest {
+
+                class RestEventPort implements com.example.application.port.IEventPort{
+                    IEventService service
+                }
+            }
+
+            namespace graphql {
+
+                class GraphQLEventPort implements com.example.application.port.IEventPort{
+                    IEventService service
+                }
+            }
+        }
+    }
+
+    namespace domain {
+
+        interface IEventService
+
+        class EventModel {
+            - long id
+            - String title
+            - String place
+            - String speaker
+            - String eventType
+            - Timestamp dateTime
+            - String ownerId
+            + Object getters()
+            + EventModelBuilder toBuilder()
+        }
+
+        class EventModelBuilder {
+            EventModel build()
+        }
+
+        class EventService implements IEventService {
+            IEventRepository repository
+            EventModel insert(EventModel e)
+            EventModel update(EventModel e)
+            EventModel findOneBy(Example<EventModel> e, Pageable)
+            List<EventModel> findAllBy(Example<EventModel> e, Pageable)
+            List<EventModel> findAllByOwner(String owner, Pageable)
+            void remove()
+        }
+    }
+
+    namespace repository {
+
+        interface IEventRepository
+
+        namespace infrastructure { 
+            class Event {
+                - long id
+                - String title
+                - String place
+                - String speaker
+                - String eventType
+                - Timestamp dateTime
+                - String ownerId
+                - Timestamp createdDateTime
+                - Timestamp lastUpdateDateTime
+            }
+
+            class EventDbRepository implements com.example.repository.IEventRepository{
+                - DbConnection connection
+                - Properties dbProperties
+                ~ Event insert(Event)
+                ~ Event update(Event)
+                ~ Event remove(Event)
+                ~ Event findOneBy(Example<Event> e)
+                ~ List<Event> findAllBy(Example<Event> e, Pageable)
+                ~ List<Event> findAllByOwner(String owner, Pageable)
+
+            }
+
+            class Pageable {
+                String offset
+                String sortBy
+                String direction
+                int page
+                long pageSize
+                long count
+            }
+        }
+    }
+    
+}
+
+com.example.domain.EventModel -[dotted]-> com.example.domain.EventModelBuilder : creates
+
+com.example.domain.EventService --> com.example.repository.IEventRepository
+
+com.example.application.port.rest.RestEventPort --> com.example.domain.IEventService
+com.example.application.port.graphql.GraphQLEventPort --> com.example.domain.IEventService
+
+@enduml

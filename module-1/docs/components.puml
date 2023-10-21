@@ -1,0 +1,29 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Component.puml
+!include ../../logos/postgresql.puml
+
+LAYOUT_WITH_LEGEND()
+
+
+title Component diagram Event Management System - Rest service
+
+ContainerDb(db, "PgSQL", "Relational Database Schema", "Stores event records, per tentant and audit metadata", "postgresql")
+
+Person(client, "API Client", "API client that consumes available event api")
+
+Container_Boundary(api, "Rest service") {
+    Component(restController, "Rest Controller", "Restful API", "Allows API clients to perform CRUD operations. Require tentant ID to use the resources available")
+
+    Component(domain, "Domain Service", "Domain service", "Holds all business logid and interaction with the repository layer.")
+    
+    Component(repository, "Repository Service", "DB Repository", "Provides all interaction with the database, abstracting all data access layer from the main domain busines logic")
+
+    Rel(client, restController, "Consumes")
+    Rel(restController, domain, "Uses")
+    Rel(domain, repository, "Uses")
+    Rel(repository, db, "Uses")
+}
+
+@enduml
