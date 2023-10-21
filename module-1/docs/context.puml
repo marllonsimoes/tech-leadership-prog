@@ -1,0 +1,27 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Component.puml
+!include ../../logos/postgresql.puml
+!include ../../logos/java.puml
+
+LAYOUT_WITH_LEGEND()
+
+
+title Context diagram Event Management System - Rest service
+
+' external dependencies 
+SystemDb_Ext(db, "PgSQL", "Relational Database Schema", "postgresql")
+
+Person(client, "API Client", "API client that consumes available event api")
+
+' context
+Enterprise_Boundary(api, "Rest service") {
+    System(restController, "Event Management", "Restful API", "java")
+}
+
+' Relationships
+Rel(client, restController, "Consumes")
+Rel(restController, db, "Uses")
+
+@enduml
